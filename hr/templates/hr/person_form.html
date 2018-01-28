@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h2>Person Form</h2>
+
+  <form method="post" id="personForm" data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <button type="submit">Save</button>
+    <a href="{% url 'person_changelist' %}">Nevermind</a>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_country").change(function () {
+      var url = $("#personForm").attr("data-cities-url");
+      var countryId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'country': countryId
+        },
+        success: function (data) {
+          $("#id_city").html(data);
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}
