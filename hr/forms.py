@@ -8,11 +8,14 @@ class PersonForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['city'].queryset = City.objects.none()
+
         data = kwargs.get('data')
         if data is not None:
-            cities = City.objects.filter(country_id=data.get('country'))
-        elif self.instance is not None:
-            cities = City.objects.filter(country_id=self.instance.country_id)
-        else:
-            cities = City.objects.none()
-        self.fields['city'].queryset = cities
+            try:
+                country_id = int(data.get('country'))
+                self.fields['city'].queryset = City.objects.filter(country_id=country_id).order_by('name')
+            except ValueError:
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        elif self.instance:
+            self.fields['city'].queryset = self.instance.country.city_set.order_by('name')
