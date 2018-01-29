@@ -17,5 +17,5 @@ class PersonForm(forms.ModelForm):
                 self.fields['city'].queryset = City.objects.filter(country_id=country_id).order_by('name')
             except ValueError:
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
-        elif self.instance:
+        elif self.instance.pk:
             self.fields['city'].queryset = self.instance.country.city_set.order_by('name')
