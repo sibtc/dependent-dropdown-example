@@ -10,10 +10,9 @@ class PersonForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['city'].queryset = City.objects.none()
 
-        data = kwargs.get('data')
-        if data is not None:
+        if 'country' in self.data:
             try:
-                country_id = int(data.get('country'))
+                country_id = int(self.data.get('country'))
                 self.fields['city'].queryset = City.objects.filter(country_id=country_id).order_by('name')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
