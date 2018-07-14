@@ -18,16 +18,23 @@
     $("#id_country").change(function () {
       var url = $("#personForm").attr("data-cities-url");
       var countryId = $(this).val();
+      if (countryId == 0) { //Not selected
+        $("#id_city").html("<option value=''>---------</option>");
+      } else {
+        // disable the city select while the ajax request 
+        $("#id_city").prop('disabled',true);
 
-      $.ajax({
-        url: url,
-        data: {
-          'country': countryId
-        },
-        success: function (data) {
-          $("#id_city").html(data);
-        }
-      });
+        $.ajax({
+          url: url,
+          data: {
+            'country': countryId
+          },
+          success: function (data) {
+            $("#id_city").removeAttr("disabled");
+            $("#id_city").html(data);
+          }
+        });
+      }
 
     });
   </script>
